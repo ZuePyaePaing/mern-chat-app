@@ -25,8 +25,10 @@ app.use("/api/v1/auth", authRoutes);
 
 //error middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).send({
+    message: err.message || "An unexpected error occurred",
+  });
 });
 
 // database connection

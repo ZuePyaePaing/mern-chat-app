@@ -2,15 +2,23 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/userSchema.js";
-
+import { createError } from "../utils/error.js";
 dotenv.config();
-export const register =async (req, res, next) => {
-  try {
-    const { name, email, password } = req.body;
 
+// register
+export const register = async (req, res, next) => {
+  try {
+    const { name, email, password, confirmPassword, terms } = req.body;
+
+    if (!terms) {
+      return next(createError(400, "Please accept terms and conditions"));
+    }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return next(createError(400, "User already exists"));
+    }
+    if (password !== confirmPassword) {
+      return next(createError(400, "Passwords do not match"));
     }
     const hashedPassword = bcrypt.hashSync(password, 10);
     const user = User.create({ name, email, password: hashedPassword });
@@ -21,22 +29,26 @@ export const register =async (req, res, next) => {
         expiresIn: "1h",
       }
     );
-    console.log(user);
     res.status(201).json({ message: "User created successfully", token });
   } catch (error) {
     next(error);
   }
 };
+
+// login
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, terms } = req.body;
+    if (!terms) {
+      return next(createError(400, "Please accept terms and conditions"));
+    }
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return next(createError(401, "Invalid credentials"));
     }
     const passwordMatch = bcrypt.compareSync(password, existingUser.password);
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return next(createError(401,"Invalid credentials" )) 
     }
     const token = jwt.sign(
       { userId: existingUser._id, email: existingUser.email },

@@ -3,7 +3,7 @@ import Container from "../components/Container";
 
 const Dashobard = () => {
   return (
-    <section className=" w-full">
+    <section >
       <Container>
         <h1>Dashobard</h1>
       </Container>
