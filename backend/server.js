@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
+import isLogin from "./middlewares/isLogin.js";
 dotenv.config();
 
 const app = express();
@@ -20,8 +21,12 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 // routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", isLogin, (req, res, next) => {
+  res.status(200).json({ message: "Hello from users route" });
+});
 
 //error middleware
 app.use((err, req, res, next) => {

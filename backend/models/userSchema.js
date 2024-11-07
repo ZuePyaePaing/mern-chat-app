@@ -27,6 +27,10 @@ const userSchema = new Schema(
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
+    resetPasswordAttempts: { type: Number, default: 0 },
+    resetPasswordLastAttempt: { type: Date },
   },
   {
     timestamps: true,
