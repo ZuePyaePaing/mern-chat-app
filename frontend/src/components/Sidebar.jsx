@@ -12,7 +12,7 @@ import {
 
 const Sidebar = () => {
   return (
-    <aside className=" flex xl:w-[300px] lg:w-[200px] md:w-[100px] sm:w-[200px] w-[50px]  h-screen bg-black p-4">
+    <aside className=" flex xl:w-[300px] lg:w-[200px] md:w-[100px] sm:w-[200px] w-[50px]   h-screen bg-black p-4">
       <div className=" h-screen w-[80px] flex flex-col items-center justify-between gap-y-4 text-white">
         <div className=" flex flex-col gap-y-4">
           <Link to="/">

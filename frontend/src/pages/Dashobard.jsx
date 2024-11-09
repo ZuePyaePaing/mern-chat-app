@@ -3,9 +3,10 @@ import Container from "../components/Container";
 
 const Dashobard = () => {
   return (
-    <section >
+    <section className="w-full">
       <Container>
-        <h1>Dashobard</h1>
+        <h1 className=" font-titel font-bold text-xl">Dashobard</h1>
+        <h1 className=" font-mon font-semibold">Dashobard</h1>
       </Container>
     </section>
   );

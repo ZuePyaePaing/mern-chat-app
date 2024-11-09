@@ -17,12 +17,15 @@ export const register = async (req, res, next) => {
       return next(createError(400, "Please accept terms and conditions"));
     }
     const existingUser = await User.findOne({ email });
+
     if (existingUser) {
       return next(createError(400, "User already exists"));
     }
+
     if (password !== confirmPassword) {
       return next(createError(400, "Passwords do not match"));
     }
+    
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
