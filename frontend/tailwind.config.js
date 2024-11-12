@@ -3,8 +3,8 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     fontFamily: {
+      sans: ["Montserrat", "Padauk", "serif"],
       titel: ["Roboto", "sans-serif"],
-      mon: ["Montserrat", "serif"],
     },
     extend: {},
   },

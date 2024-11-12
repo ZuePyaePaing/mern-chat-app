@@ -25,7 +25,7 @@ export const register = async (req, res, next) => {
     if (password !== confirmPassword) {
       return next(createError(400, "Passwords do not match"));
     }
-    
+
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
@@ -50,7 +50,13 @@ export const login = async (req, res, next) => {
     if (!terms) {
       return next(createError(400, "Please accept terms and conditions"));
     }
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email }).select({
+      name: 1,
+      email: 1,
+      isAdmin: 1,
+      avatar: 1,
+    });
+
     if (!existingUser) {
       return next(createError(401, "Invalid credentials"));
     }
@@ -72,6 +78,7 @@ export const login = async (req, res, next) => {
     res.status(200).json({
       message: "Login successful",
       token,
+      user: existingUser,
     });
   } catch (error) {
     next(error);
