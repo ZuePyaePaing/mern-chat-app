@@ -139,7 +139,7 @@ const RegisterForm = () => {
             <p className=" text-red-500 text-sm">{errors.terms.message}</p>
           ) : (
             <span className=" text-sm">
-              {" "}
+              
               I agree to the terms and Conditions
             </span>
           )}

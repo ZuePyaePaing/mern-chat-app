@@ -6,7 +6,16 @@ export default {
       sans: ["Montserrat", "Padauk", "serif"],
       titel: ["Roboto", "sans-serif"],
     },
-    extend: {},
+    extend: {
+      colors: {
+        scrollbar: {
+          track: "#1f2937", // Dark gray
+          thumb: "#4b5563", // Gray
+          width: '2px',
+        },
+      },
+    },
   },
-  plugins: [],
+  darkMode: "class",
+  plugins: [require("tailwind-scrollbar")],
 };

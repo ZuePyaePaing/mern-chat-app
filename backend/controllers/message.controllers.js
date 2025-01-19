@@ -8,8 +8,7 @@ export const sendMessage = async (req, res, next) => {
     const receiver = await User.findOne({ _id: receiverId });
     if (!receiver) {
       return next(createError(404, "Receiver not found"));
-    }   
-    
+    }    
     const message = await Message.create({
       senderId,
       receiverId,

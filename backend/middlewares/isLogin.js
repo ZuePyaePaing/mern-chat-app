@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { createError } from "../utils/error.js";
 import dotenv from "dotenv";
 dotenv.config();
-
 const isLogin = async (req, res, next) => {
   try {
     // whit bearer token

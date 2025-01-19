@@ -13,3 +13,4 @@ export const handleRgister = (data) => {
     body: JSON.stringify(data),
   });
 };
+

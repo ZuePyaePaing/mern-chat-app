@@ -25,7 +25,6 @@ export const register = async (req, res, next) => {
     if (password !== confirmPassword) {
       return next(createError(400, "Passwords do not match"));
     }
-
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
@@ -50,13 +49,7 @@ export const login = async (req, res, next) => {
     if (!terms) {
       return next(createError(400, "Please accept terms and conditions"));
     }
-    const existingUser = await User.findOne({ email }).select({
-      name: 1,
-      email: 1,
-      isAdmin: 1,
-      avatar: 1,
-    });
-
+    const existingUser = await User.findOne({ email }).select("+password");
     if (!existingUser) {
       return next(createError(401, "Invalid credentials"));
     }
@@ -64,6 +57,8 @@ export const login = async (req, res, next) => {
     if (!passwordMatch) {
       return next(createError(401, "Invalid credentials"));
     }
+     // Exclude the password from the response
+    const { password: _, ...userWithoutPassword } = existingUser.toObject();
     const token = jwt.sign(
       {
         userId: existingUser._id,
@@ -78,7 +73,7 @@ export const login = async (req, res, next) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user: existingUser,
+      user: userWithoutPassword,
     });
   } catch (error) {
     next(error);
@@ -121,7 +116,6 @@ export const forgetPassword = async (req, res, next) => {
       .update(resetToken)
       .digest("hex");
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour from now
-
     await user.save();
 
     // Send the reset link via email
@@ -135,7 +129,6 @@ export const forgetPassword = async (req, res, next) => {
       subject: "Password Reset Request",
       message,
     });
-
     res.status(200).json({ message: "Password reset email sent" });
   } catch (error) {
     next(error);
@@ -147,13 +140,11 @@ export const resetPassword = async (req, res, next) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
-
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
     const user = await User.findOne({
       resetPasswordToken: hashedToken,
       resetPasswordExpires: { $gt: Date.now() },
     });
-
     if (!user) {
       return next(createError(400, "Invalid or expired token"));
     }
@@ -164,9 +155,7 @@ export const resetPassword = async (req, res, next) => {
     user.resetPasswordExpires = undefined;
     user.resetPasswordAttempts = 0;
     user.resetPasswordLastAttempt = undefined;
-
     await user.save();
-
     res.status(200).json({ message: "Password has been reset successfully" });
   } catch (error) {
     next(error);
@@ -178,7 +167,6 @@ export const changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
     const userId = req.userId;
-    console.log(userId);
     const user = await User.findOne({ _id: userId });
     if (!user) {
       return next(createError(404, "User not found"));
@@ -195,7 +183,19 @@ export const changePassword = async (req, res, next) => {
     next(error);
   }
 };
-
+// get profile
+export const getProfile = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      return next(createError(404, "User not found"));
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+}
 // change name
 export const changeName = async (req, res, next) => {
   try {
@@ -223,7 +223,6 @@ export const changeProfile = async (req, res, next) => {
     if (!user) {
       return next(createError(404, "User not found"));
     }
-
     user.avatar = `${req.protocol}://${req.get("host")}/uploads/${
       req.file.filename
     }`;

@@ -3,6 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { handleLogin } from "../../../services/auth";
 import useCookie from "react-use-cookie";
+import { tailspin } from "ldrs";
+
+tailspin.register();
+
 const LoginForm = () => {
   const navigate = useNavigate();
   const [token, setToken] = useCookie("my_token");
@@ -13,14 +17,14 @@ const LoginForm = () => {
     formState: { errors, isSubmitting },
     reset,
   } = useForm();
-  
+
   const onSubmit = async (data) => {
     const response = await handleLogin(data);
     const jsonData = await response.json();
-   
+
     if (response.ok) {
       setToken(jsonData.token);
-      setUser(jsonData.user);
+      setUser(JSON.stringify(jsonData.user));
       navigate("/dashboard");
     }
     reset();
@@ -112,7 +116,16 @@ const LoginForm = () => {
             disabled={isSubmitting}
             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            {isSubmitting ? "Submitting..." : " Sign in"}
+            {isSubmitting ? (
+              <l-tailspin
+                size="20"
+                stroke="2"
+                speed="0.9"
+                color="white"
+              ></l-tailspin>
+            ) : (
+              " Sign in"
+            )}
           </button>
         </div>
       </form>
