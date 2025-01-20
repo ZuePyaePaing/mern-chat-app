@@ -11,11 +11,10 @@ export default {
         scrollbar: {
           track: "#1f2937", // Dark gray
           thumb: "#4b5563", // Gray
-          width: '2px',
+          width: "2px",
         },
       },
     },
   },
   darkMode: "class",
-  plugins: [require("tailwind-scrollbar")],
 };

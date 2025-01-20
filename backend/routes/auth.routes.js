@@ -16,6 +16,7 @@ import {
   changeName,
   changeProfile,
   getProfile,
+  addBioStatus,
 } from "../controllers/auth.controllers.js";
 import isLogin from "../middlewares/isLogin.js";
 import upload from "../middlewares/upload.js";
@@ -59,4 +60,6 @@ router.post(
   upload.single("avatar"),
   changeProfile
 );
+
+router.post("/add-bio-status", isLogin, addBioStatus);
 export default router;

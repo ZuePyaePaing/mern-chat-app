@@ -28,6 +28,7 @@ const userSchema = new Schema(
     resetPasswordAttempts: { type: Number, default: 0 },
     resetPasswordLastAttempt: { type: Date },
   },
+  { bio: { type: String } },
   {
     timestamps: true,
   }

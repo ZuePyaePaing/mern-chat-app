@@ -28,7 +28,7 @@ export const register = async (req, res, next) => {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    // Determine if the user is na admin
+    // Determine if the user is an admin
     const isAdmin = email === "kaunglay24588@gmail.com";
     await User.create({
       name,
@@ -57,7 +57,7 @@ export const login = async (req, res, next) => {
     if (!passwordMatch) {
       return next(createError(401, "Invalid credentials"));
     }
-     // Exclude the password from the response
+    // Exclude the password from the response
     const { password: _, ...userWithoutPassword } = existingUser.toObject();
     const token = jwt.sign(
       {
@@ -195,7 +195,7 @@ export const getProfile = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}
+};
 // change name
 export const changeName = async (req, res, next) => {
   try {
@@ -230,6 +230,22 @@ export const changeProfile = async (req, res, next) => {
     res
       .status(200)
       .json({ message: "User profile has been changed successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const addBioStatus = async (req, res, next) => {
+  try {
+    const { bio } = req.body;
+    const userId = req.userId;
+    const user = await user.findOne({ _id: userId });
+    if (!user) {
+      return next(createError(404, "User not found"));
+    }
+    user.bio = bio;
+    await user.save();
+    return res.status(200).json({ message: "Bio has been changed successfully" });
   } catch (error) {
     next(error);
   }

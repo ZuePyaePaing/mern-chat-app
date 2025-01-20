@@ -33,21 +33,21 @@ const Aside = () => {
       </div>
       <nav className="mt-8">
         <Link
-          to={"/dashboard/messages"}
+          to={"/messages"}
           className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white"
         >
           <BarChart3 className="mr-3 h-6 w-6" />
           All Chat
         </Link>
         <Link
-          to={"/dashboard/messages-group"}
+          to={"/messages/messages-group"}
           className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white"
         >
           <Users className="mr-3 h-6 w-6" />
          Group
         </Link>
         <Link
-          to={"/dashboard/settings"}
+          to={"/messages/settings"}
           className="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 hover:text-white"
         >
           <Settings className="mr-3 h-6 w-6" />
