@@ -1,4 +1,6 @@
 import { Search } from "lucide-react";
+import { Link } from "react-router-dom";
+import useUserIdStore from "../../../stores/user";
 
 const users = [
   {
@@ -75,7 +77,8 @@ const users = [
   },
 ];
 
-export default function MessageUserList({ onSelectUser, selectedUserId }) {
+export default function MessageUserList() {
+  const { setSelectedUserId,selectedUserId } = useUserIdStore();
   return (
     <div className="flex flex-col h-full">
       <div className="p-4">
@@ -95,12 +98,13 @@ export default function MessageUserList({ onSelectUser, selectedUserId }) {
       <div className="flex-grow overflow-y-auto scrollbar">
         <div className="space-y-2 p-2">
           {users.map((user) => (
-            <div
+            <Link
+              to={`/messages/${user.id}`}
               key={user.id}
               className={`flex items-center space-x-4 p-3 rounded-lg cursor-pointer ${
                 selectedUserId === user.id ? "bg-gray-700" : "hover:bg-gray-800"
               }`}
-              onClick={() => onSelectUser(user.id)}
+              onClick={() => setSelectedUserId(user.id)}
             >
               <img
                 src={user.avatar || "/placeholder.svg"}
@@ -121,7 +125,7 @@ export default function MessageUserList({ onSelectUser, selectedUserId }) {
                   {user.unreadCount}
                 </div>
               )}
-            </div>
+            </Link>
           ))}
         </div>
       </div>

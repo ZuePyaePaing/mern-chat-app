@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Send, Paperclip, Smile } from "lucide-react";
+import useUserIdStore from "../../../stores/user";
 
 const messages = [
   {
@@ -50,7 +51,9 @@ const messages = [
   },
 ];
 
-export default function MessageDetail({ selectedUserId }) {
+export default function MessageDetail() {
+  const { selectedUserId } = useUserIdStore();
+  console.log(selectedUserId, "selectedUserId par");
   const [newMessage, setNewMessage] = useState("");
 
   const handleSendMessage = (e) => {

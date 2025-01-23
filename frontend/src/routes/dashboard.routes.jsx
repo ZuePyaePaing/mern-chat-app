@@ -5,6 +5,8 @@ import IntegrationsPage from "../features/dashboard/components/setting/Integrati
 import Notifications from "../features/dashboard/components/setting/Notifications";
 import Security from "../features/dashboard/components/setting/Security";
 import DashboardPage from "../features/dashboard/pages/DashboardPage";
+import MessageDetail from "../features/dashboard/pages/MessageDetailPage";
+import MessageGroupDetialPage from "../features/dashboard/pages/MessageGroupDetialPage";
 import MessageGroupPage from "../features/dashboard/pages/MessageGroupPage";
 import SettingPage from "../features/dashboard/pages/SettingPage";
 
@@ -13,15 +15,25 @@ const dashboardRoutes = [
     path: "/messages",
     element: <DashboardLayout />,
     children: [
-      { index: true, element: <DashboardPage /> },
-
+      {
+        path: "",
+        element: <DashboardPage />,
+        children: [
+          {
+            path: ":userId",
+            element: <MessageDetail />,
+          },
+        ],
+      },
       {
         path: "messages-group",
         element: <MessageGroupPage />,
-      },
-      {
-        path: "messages-group/:groupId",
-        element: <MessageGroupPage />,
+        children: [
+          {
+            path: ":groupId",
+            element: <MessageGroupDetialPage />,
+          },
+        ],
       },
       {
         path: "settings",

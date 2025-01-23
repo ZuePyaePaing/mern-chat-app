@@ -42,7 +42,7 @@ const ProfileSection = () => {
           />
         </div>
         <div className="flex-grow h-screen">
-          <Outlet />
+          <Outlet selectedLableId={selectedLableId}/>
         </div>
       </div>
     </div>
