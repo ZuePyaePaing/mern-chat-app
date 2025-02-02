@@ -1,84 +1,112 @@
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
+import useCookie from "react-use-cookie";
 import useUserIdStore from "../../../stores/user";
+import { useEffect, useState } from "react";
+import socket from "../../../socket.io/socket.client";
 
-const users = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Hey, how are you?",
-    time: "10:30 AM",
-    unreadCount: 2,
-  },
-  {
-    id: 2,
-    name: "Bob Smith",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Can we meet tomorrow?",
-    time: "Yesterday",
-  },
-  {
-    id: 3,
-    name: "Charlie Brown",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "I sent you the files.",
-    time: "Tuesday",
-  },
-  {
-    id: 4,
-    name: "Diana Prince",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Thanks for your help!",
-    time: "Monday",
-  },
-  {
-    id: 5,
-    name: "Ethan Hunt",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Mission accomplished",
-    time: "Last week",
-  },
-  {
-    id: 6,
-    name: "Ethan Hunt",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Mission accomplished",
-    time: "Last week",
-  },
-  {
-    id: 7,
-    name: "Ethan Hunt",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Mission accomplished",
-    time: "Last week",
-  },
-  {
-    id: 8,
-    name: "Ethan Hunt",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Mission accomplished",
-    time: "Last week",
-  },
-  {
-    id: 10,
-    name: "Ethan Hunt",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Mission accomplished",
-    time: "Last week",
-  },
+// const users = [
+//   {
+//     id: 1,
+//     name: "Alice Johnson",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Hey, how are you?",
+//     time: "10:30 AM",
+//     unreadCount: 2,
+//   },
+//   {
+//     id: 2,
+//     name: "Bob Smith",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Can we meet tomorrow?",
+//     time: "Yesterday",
+//   },
+//   {
+//     id: 3,
+//     name: "Charlie Brown",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "I sent you the files.",
+//     time: "Tuesday",
+//   },
+//   {
+//     id: 4,
+//     name: "Diana Prince",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Thanks for your help!",
+//     time: "Monday",
+//   },
+//   {
+//     id: 5,
+//     name: "Ethan Hunt",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Mission accomplished",
+//     time: "Last week",
+//   },
+//   {
+//     id: 6,
+//     name: "Ethan Hunt",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Mission accomplished",
+//     time: "Last week",
+//   },
+//   {
+//     id: 7,
+//     name: "Ethan Hunt",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Mission accomplished",
+//     time: "Last week",
+//   },
+//   {
+//     id: 8,
+//     name: "Ethan Hunt",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Mission accomplished",
+//     time: "Last week",
+//   },
+//   {
+//     id: 10,
+//     name: "Ethan Hunt",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Mission accomplished",
+//     time: "Last week",
+//   },
 
-  {
-    id: 10,
-    name: "Ethan Hunt",
-    avatar: "/placeholder.svg?height=48&width=48",
-    lastMessage: "Mission accomplished",
-    time: "Last week",
-  },
-];
+//   {
+//     id: 10,
+//     name: "Ethan Hunt",
+//     avatar: "/placeholder.svg?height=48&width=48",
+//     lastMessage: "Mission accomplished",
+//     time: "Last week",
+//   },
+// ];
 
 export default function MessageUserList() {
-  const { setSelectedUserId,selectedUserId } = useUserIdStore();
+  const [users, setUsers] = useState([]);
+  const [token, setToken] = useCookie("my_token");
+  const [user, setUser] = useCookie("my_user");
+  const { setSelectedUserId, selectedUserId } = useUserIdStore();
+
+  useEffect(() => {
+    socket.connect();
+    socket.emit("message", "hello world");
+  }, []);
+  const getUsers = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/v1/auth/users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const { users } = await response.json();
+      const filterUser = users.filter((u) => u._id !== JSON.parse(user)._id);
+      setUsers(filterUser);
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getUsers();
+  }, []);
   return (
     <div className="flex flex-col h-full">
       <div className="p-4">
@@ -99,12 +127,14 @@ export default function MessageUserList() {
         <div className="space-y-2 p-2">
           {users.map((user) => (
             <Link
-              to={`/messages/${user.id}`}
-              key={user.id}
+              to={`/messages/${user._id}`}
+              key={user._id}
               className={`flex items-center space-x-4 p-3 rounded-lg cursor-pointer ${
-                selectedUserId === user.id ? "bg-gray-700" : "hover:bg-gray-800"
+                selectedUserId === user._id
+                  ? "bg-gray-700"
+                  : "hover:bg-gray-800"
               }`}
-              onClick={() => setSelectedUserId(user.id)}
+              onClick={() => setSelectedUserId(user._id)}
             >
               <img
                 src={user.avatar || "/placeholder.svg"}

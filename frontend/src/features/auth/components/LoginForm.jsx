@@ -25,7 +25,7 @@ const LoginForm = () => {
     if (response.ok) {
       setToken(jsonData.token);
       setUser(JSON.stringify(jsonData.user));
-      navigate("/dashboard");
+      navigate("/messages");
     }
     reset();
   };

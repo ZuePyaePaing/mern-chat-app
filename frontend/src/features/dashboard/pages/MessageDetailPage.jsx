@@ -1,4 +1,4 @@
-"use client";
+
 
 import { useState } from "react";
 import { Send, Paperclip, Smile } from "lucide-react";
@@ -53,7 +53,6 @@ const messages = [
 
 export default function MessageDetail() {
   const { selectedUserId } = useUserIdStore();
-  console.log(selectedUserId, "selectedUserId par");
   const [newMessage, setNewMessage] = useState("");
 
   const handleSendMessage = (e) => {

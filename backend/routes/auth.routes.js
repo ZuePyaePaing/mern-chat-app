@@ -17,6 +17,7 @@ import {
   changeProfile,
   getProfile,
   addBioStatus,
+  getAllUsers,
 } from "../controllers/auth.controllers.js";
 import isLogin from "../middlewares/isLogin.js";
 import upload from "../middlewares/upload.js";
@@ -45,6 +46,8 @@ router.post(
 );
 //GET '/profile'
 router.get("/profile", isLogin, getProfile);
+// GET '/users
+router.get("/users", isLogin, getAllUsers);
 // POST /change-name
 router.post(
   "/change-name",

@@ -27,8 +27,10 @@ const userSchema = new Schema(
     resetPasswordExpires: { type: Date },
     resetPasswordAttempts: { type: Number, default: 0 },
     resetPasswordLastAttempt: { type: Date },
+    bio: { type: String },
+    isOnline: { type: Boolean, default: false },
   },
-  { bio: { type: String } },
+
   {
     timestamps: true,
   }

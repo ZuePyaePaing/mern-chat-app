@@ -67,7 +67,7 @@ export const login = async (req, res, next) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: "30d",
       }
     );
     res.status(200).json({
@@ -239,13 +239,24 @@ export const addBioStatus = async (req, res, next) => {
   try {
     const { bio } = req.body;
     const userId = req.userId;
-    const user = await user.findOne({ _id: userId });
+    const user = await User.findOne({ _id: userId });
     if (!user) {
       return next(createError(404, "User not found"));
     }
     user.bio = bio;
     await user.save();
-    return res.status(200).json({ message: "Bio has been changed successfully" });
+    return res
+      .status(200)
+      .json({ message: "Bio has been changed successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({ users });
   } catch (error) {
     next(error);
   }
