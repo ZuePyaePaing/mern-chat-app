@@ -35,11 +35,14 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1", messageRoutes);
+
 //error middleware
 app.use(errorMiddleware);
 
 // database connection
 connectDB();
+
+// socket server wrapp
 const server = createServer(app);
 socketSetup(server);
 

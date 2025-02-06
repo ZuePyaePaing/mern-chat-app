@@ -18,6 +18,7 @@ import {
   getProfile,
   addBioStatus,
   getAllUsers,
+  getSingleUser
 } from "../controllers/auth.controllers.js";
 import isLogin from "../middlewares/isLogin.js";
 import upload from "../middlewares/upload.js";
@@ -65,4 +66,6 @@ router.post(
 );
 
 router.post("/add-bio-status", isLogin, addBioStatus);
+
+router.get("/user/:id", isLogin, getSingleUser);
 export default router;
